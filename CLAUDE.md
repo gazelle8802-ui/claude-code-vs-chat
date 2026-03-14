@@ -51,3 +51,10 @@ Both mocks keep a **dark background** (`#13102a`) even on the light theme — th
 - CSS variables are declared in `:root` — change colors there, not inline
 - Responsive breakpoint at `820px` — switches split grids to single column
 - Animations: `fadeUp` (hero elements, staggered delay) and `fadeIn` (panels)
+
+## Environment Quirks
+- **No `gh` CLI** — GitHub auth uses PAT embedded in push URL: `git push "https://<PAT>@github.com/gazelle8802-ui/claude-code-vs-chat.git" main`
+- **Git identity** — must set before first commit: `git config user.email "..."` and `git config user.name "..."`
+- **Vercel project name** — folder name has a space; pass `--name claude-code-vs-chat` to avoid 400 error
+- **Full Vercel deploy command:** `vercel --prod --token <token> --yes --scope gazelle8802-7292s-projects --name claude-code-vs-chat`
+- **Background tasks + credentials** — tasks requiring interactive prompts (git credential dialog) fail silently; always use non-interactive auth (PAT in URL, `--token` flags)
