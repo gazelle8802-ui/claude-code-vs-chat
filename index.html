@@ -6,7 +6,7 @@
   <title>Claude Code vs Claude Chat</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,700&family=Nunito:wght@400;500;600;700&family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     :root {
       --bg: #07050f;
@@ -30,8 +30,10 @@
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-weight: 300;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 1.7;
       min-height: 100vh;
       overflow-x: hidden;
     }
@@ -75,22 +77,22 @@
 
     .hero-eyebrow {
       font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.68rem;
-      font-weight: 400;
+      font-size: 0.72rem;
+      font-weight: 500;
       letter-spacing: 0.22em;
       text-transform: uppercase;
-      color: var(--muted);
+      color: #a099c8;
       margin-bottom: 2.5rem;
       animation: fadeUp 0.8s ease both;
       position: relative;
     }
 
     .hero-title {
-      font-family: 'Syne', sans-serif;
+      font-family: 'Fraunces', serif;
       font-size: clamp(3.2rem, 9.5vw, 8.5rem);
-      font-weight: 800;
+      font-weight: 900;
       line-height: 0.92;
-      letter-spacing: -0.03em;
+      letter-spacing: -0.02em;
       margin-bottom: 2rem;
       animation: fadeUp 0.8s 0.1s ease both;
       position: relative;
@@ -125,10 +127,11 @@
     }
 
     .hero-sub {
-      max-width: 520px;
-      font-size: 1.05rem;
-      line-height: 1.75;
-      color: var(--muted);
+      max-width: 560px;
+      font-size: 1.15rem;
+      font-weight: 500;
+      line-height: 1.8;
+      color: #c0b8e8;
       margin-bottom: 3.5rem;
       animation: fadeUp 0.8s 0.2s ease both;
       position: relative;
@@ -214,7 +217,7 @@
     }
 
     .panel-title {
-      font-family: 'Syne', sans-serif;
+      font-family: 'Fraunces', serif;
       font-size: clamp(2rem, 4vw, 3.5rem);
       font-weight: 800;
       line-height: 1;
@@ -238,18 +241,20 @@
 
     .panel-subtitle {
       font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.78rem;
-      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #a099c8;
       margin-bottom: 2.5rem;
       line-height: 1.5;
     }
 
     .panel-desc {
-      font-size: 1rem;
-      line-height: 1.78;
-      color: #8a82aa;
-      margin-bottom: 3rem;
-      max-width: 440px;
+      font-size: 1.08rem;
+      font-weight: 500;
+      line-height: 1.85;
+      color: #ccc5f0;
+      margin-bottom: 1.5rem;
+      max-width: 460px;
     }
 
     /* ── FEATURE LIST ── */
@@ -265,9 +270,10 @@
       gap: 1rem;
       padding: 1rem 0;
       border-top: 1px solid var(--border);
-      font-size: 0.92rem;
-      line-height: 1.5;
-      color: #7a7290;
+      font-size: 0.97rem;
+      font-weight: 500;
+      line-height: 1.6;
+      color: #b0a8d8;
       transition: color 0.2s;
     }
 
@@ -282,6 +288,31 @@
 
     .panel-code .feat-icon { color: var(--code-accent); }
     .panel-chat .feat-icon { color: var(--chat-accent); }
+
+    /* ── PULL QUOTE ── */
+    .pull-quote {
+      border-left: 3px solid;
+      padding: 1rem 1.4rem;
+      margin-bottom: 2.5rem;
+      border-radius: 0 8px 8px 0;
+      font-family: 'Fraunces', serif;
+      font-size: 1.05rem;
+      font-weight: 400;
+      font-style: italic;
+      line-height: 1.75;
+    }
+
+    .panel-code .pull-quote {
+      border-color: var(--code-accent);
+      background: rgba(184,255,87,0.05);
+      color: #d8ffaa;
+    }
+
+    .panel-chat .pull-quote {
+      border-color: var(--chat-accent);
+      background: rgba(255,77,184,0.05);
+      color: #ffb0e0;
+    }
 
     /* ── TERMINAL MOCK ── */
     .terminal {
@@ -393,19 +424,20 @@
 
     .section-label {
       font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.65rem;
+      font-size: 0.7rem;
+      font-weight: 500;
       letter-spacing: 0.22em;
       text-transform: uppercase;
-      color: var(--muted);
+      color: #a099c8;
       margin-bottom: 1.2rem;
     }
 
     .section-title {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
+      font-family: 'Fraunces', serif;
+      font-weight: 900;
       font-size: clamp(2rem, 4vw, 3.2rem);
       line-height: 1.05;
-      letter-spacing: -0.03em;
+      letter-spacing: -0.02em;
       color: var(--white);
       margin-bottom: 4rem;
     }
@@ -442,15 +474,18 @@
 
     tbody td {
       padding: 1.1rem 1.5rem;
-      color: #7a7290;
+      color: #b0a8d8;
+      font-weight: 500;
       vertical-align: middle;
-      line-height: 1.5;
+      line-height: 1.6;
+      font-size: 0.94rem;
     }
 
     tbody td:first-child {
-      color: var(--muted);
+      color: #a099c8;
       font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.75rem;
+      font-size: 0.78rem;
+      font-weight: 500;
       letter-spacing: 0.06em;
     }
 
@@ -469,11 +504,20 @@
     .use-panel-code { border-right: 1px solid var(--rule); }
 
     .use-title {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: 2rem;
-      letter-spacing: -0.03em;
+      font-family: 'Fraunces', serif;
+      font-weight: 900;
+      font-size: 2.2rem;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.6rem;
+    }
+
+    .use-intro {
+      font-size: 1rem;
+      font-weight: 500;
+      color: #a099c8;
+      line-height: 1.7;
       margin-bottom: 2rem;
+      max-width: 420px;
     }
 
     .use-panel-code .use-title { color: var(--code-accent); }
@@ -489,9 +533,10 @@
     .use-list li {
       display: flex;
       gap: 0.8rem;
-      font-size: 0.9rem;
-      color: #7a7290;
-      line-height: 1.5;
+      font-size: 0.97rem;
+      font-weight: 500;
+      color: #b0a8d8;
+      line-height: 1.6;
       transition: color 0.2s;
     }
 
@@ -518,7 +563,7 @@
     }
 
     .footer-brand {
-      font-family: 'Syne', sans-serif;
+      font-family: 'Fraunces', serif;
       font-weight: 700;
       font-size: 1.1rem;
       background: linear-gradient(90deg, var(--code-accent), var(--chat-accent));
@@ -529,8 +574,9 @@
 
     .footer-note {
       font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.65rem;
-      color: #2a2040;
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: #6a6090;
       letter-spacing: 0.08em;
     }
 
@@ -608,6 +654,8 @@
         Think of it as an AI developer you hire to work inside your computer. You type a task in plain English — it reads your files, writes or fixes code, runs tests, and saves the results. No copy-pasting required.
       </p>
 
+      <p class="pull-quote">"Fix the login bug, add tests, and commit it" — Claude Code reads your codebase, does the work, and hands you a finished commit.</p>
+
       <ul class="feature-list">
         <li>
           <svg class="feat-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 7 10 13 16 7"/></svg>
@@ -665,6 +713,8 @@
         Like a brilliant friend you can message about anything — writing, ideas, research, or code questions. Open a browser tab, type your question, get a clear answer. No installation, no technical knowledge needed.
       </p>
 
+      <p class="pull-quote">"Summarise this 40-page report and draft a follow-up email" — Claude Chat reads the document you upload and writes the email on the spot.</p>
+
       <ul class="feature-list">
         <li>
           <svg class="feat-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 7 10 13 16 7"/></svg>
@@ -719,7 +769,7 @@
   <section class="comparison">
     <p class="section-label">Side by side</p>
     <h2 class="section-title">How They Compare</h2>
-    <p style="color:#7a7290;font-size:1rem;line-height:1.75;max-width:620px;margin-bottom:3rem;margin-top:-2rem;">
+    <p style="color:#b0a8d8;font-size:1rem;font-weight:500;line-height:1.75;max-width:620px;margin-bottom:3rem;margin-top:-2rem;">
       A quick cheat-sheet. <span style="color:var(--code-accent)">Green</span> = Claude Code &nbsp;·&nbsp; <span style="color:var(--chat-accent)">Pink</span> = Claude Chat &nbsp;·&nbsp; <span style="color:#2a2040">Dim</span> = not available.
     </p>
     <div class="table-wrap">
@@ -802,6 +852,7 @@
     <div class="use-panel use-panel-code">
       <p class="section-label">When to reach for</p>
       <h3 class="use-title">Claude Code</h3>
+      <p class="use-intro">You have a project open on your computer and want Claude to actually do the work — not just tell you how.</p>
       <ul class="use-list">
         <li><span class="use-bullet">→</span> Refactoring a module across dozens of files</li>
         <li><span class="use-bullet">→</span> Debugging a failing test suite end-to-end</li>
@@ -816,6 +867,7 @@
     <div class="use-panel use-panel-chat">
       <p class="section-label">When to reach for</p>
       <h3 class="use-title">Claude Chat</h3>
+      <p class="use-intro">You want to think through something, get answers fast, or produce written work — no computer setup required.</p>
       <ul class="use-list">
         <li><span class="use-bullet">→</span> Getting a quick explanation of a concept</li>
         <li><span class="use-bullet">→</span> Drafting or editing a document or email</li>
