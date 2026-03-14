@@ -9,19 +9,19 @@
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,700&family=Nunito:wght@400;500;600;700&family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #07050f;
-      --surface: #0e0b1e;
-      --border: rgba(255,255,255,0.07);
-      --text: #f0ecff;
-      --muted: #7a6fa0;
-      --code-accent: #b8ff57;
-      --code-glow: rgba(184,255,87,0.18);
-      --code-mid: #78c422;
-      --chat-accent: #ff4db8;
-      --chat-glow: rgba(255,77,184,0.18);
-      --chat-mid: #c4228a;
-      --rule: rgba(255,255,255,0.06);
-      --white: #f0ecff;
+      --bg: #f4f1ff;
+      --surface: #eceaff;
+      --border: rgba(100,80,180,0.12);
+      --text: #1c1530;
+      --muted: #7060a0;
+      --code-accent: #3d9900;
+      --code-glow: rgba(61,153,0,0.12);
+      --code-mid: #2a6e00;
+      --chat-accent: #c2006b;
+      --chat-glow: rgba(194,0,107,0.12);
+      --chat-mid: #8c004e;
+      --rule: rgba(100,80,180,0.1);
+      --white: #1c1530;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -57,9 +57,9 @@
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(ellipse 55% 45% at 15% 65%, rgba(184,255,87,0.13) 0%, transparent 55%),
-        radial-gradient(ellipse 55% 45% at 85% 35%, rgba(255,77,184,0.13) 0%, transparent 55%),
-        radial-gradient(ellipse 40% 30% at 50% 50%, rgba(120,80,255,0.08) 0%, transparent 60%);
+        radial-gradient(ellipse 55% 45% at 15% 65%, rgba(61,153,0,0.12) 0%, transparent 55%),
+        radial-gradient(ellipse 55% 45% at 85% 35%, rgba(194,0,107,0.1) 0%, transparent 55%),
+        radial-gradient(ellipse 40% 30% at 50% 50%, rgba(120,80,255,0.07) 0%, transparent 60%);
       pointer-events: none;
     }
 
@@ -68,8 +68,8 @@
       position: absolute;
       inset: 0;
       background-image:
-        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+        linear-gradient(rgba(100,80,180,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(100,80,180,0.06) 1px, transparent 1px);
       background-size: 60px 60px;
       pointer-events: none;
       mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
@@ -81,7 +81,7 @@
       font-weight: 500;
       letter-spacing: 0.22em;
       text-transform: uppercase;
-      color: #a099c8;
+      color: #8070b0;
       margin-bottom: 2.5rem;
       animation: fadeUp 0.8s ease both;
       position: relative;
@@ -100,11 +100,11 @@
 
     .hero-title .word-code {
       display: block;
-      background: linear-gradient(135deg, #b8ff57 0%, #57ffb8 100%);
+      background: linear-gradient(135deg, #2a7a00 0%, #009955 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      filter: drop-shadow(0 0 40px rgba(184,255,87,0.35));
+      filter: drop-shadow(0 2px 20px rgba(61,153,0,0.2));
     }
 
     .hero-title .word-vs {
@@ -119,11 +119,11 @@
 
     .hero-title .word-chat {
       display: block;
-      background: linear-gradient(135deg, #ff4db8 0%, #ff8c57 100%);
+      background: linear-gradient(135deg, #c2006b 0%, #d4500a 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      filter: drop-shadow(0 0 40px rgba(255,77,184,0.35));
+      filter: drop-shadow(0 2px 20px rgba(194,0,107,0.2));
     }
 
     .hero-sub {
@@ -131,7 +131,7 @@
       font-size: 1.15rem;
       font-weight: 500;
       line-height: 1.8;
-      color: #c0b8e8;
+      color: #4a3e70;
       margin-bottom: 3.5rem;
       animation: fadeUp 0.8s 0.2s ease both;
       position: relative;
@@ -140,7 +140,7 @@
     .hero-divider {
       width: 1px;
       height: 60px;
-      background: linear-gradient(to bottom, rgba(184,255,87,0.4), transparent);
+      background: linear-gradient(to bottom, rgba(61,153,0,0.5), transparent);
       margin: 0 auto;
       animation: fadeUp 0.8s 0.3s ease both;
     }
@@ -167,8 +167,8 @@
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
       background:
-        radial-gradient(ellipse 70% 50% at -10% 10%, rgba(184,255,87,0.1) 0%, transparent 65%),
-        radial-gradient(ellipse 50% 40% at 110% 90%, rgba(184,255,87,0.05) 0%, transparent 60%);
+        radial-gradient(ellipse 70% 50% at -10% 10%, rgba(61,153,0,0.07) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 40% at 110% 90%, rgba(61,153,0,0.04) 0%, transparent 60%);
       pointer-events: none;
     }
 
@@ -177,8 +177,8 @@
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
       background:
-        radial-gradient(ellipse 70% 50% at 110% 10%, rgba(255,77,184,0.1) 0%, transparent 65%),
-        radial-gradient(ellipse 50% 40% at -10% 90%, rgba(255,77,184,0.05) 0%, transparent 60%);
+        radial-gradient(ellipse 70% 50% at 110% 10%, rgba(194,0,107,0.07) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 40% at -10% 90%, rgba(194,0,107,0.04) 0%, transparent 60%);
       pointer-events: none;
     }
 
@@ -197,14 +197,14 @@
 
     .panel-code .panel-tag {
       color: var(--code-accent);
-      background: rgba(184,255,87,0.08);
-      border: 1px solid rgba(184,255,87,0.2);
+      background: rgba(61,153,0,0.08);
+      border: 1px solid rgba(61,153,0,0.22);
     }
 
     .panel-chat .panel-tag {
       color: var(--chat-accent);
-      background: rgba(255,77,184,0.08);
-      border: 1px solid rgba(255,77,184,0.2);
+      background: rgba(194,0,107,0.07);
+      border: 1px solid rgba(194,0,107,0.2);
     }
 
     .panel-tag::before {
@@ -226,14 +226,14 @@
     }
 
     .panel-code .panel-title {
-      background: linear-gradient(135deg, #b8ff57 0%, #57ffb8 100%);
+      background: linear-gradient(135deg, #2a7a00 0%, #009955 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
 
     .panel-chat .panel-title {
-      background: linear-gradient(135deg, #ff4db8 0%, #ff8c57 100%);
+      background: linear-gradient(135deg, #c2006b 0%, #d4500a 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -243,7 +243,7 @@
       font-family: 'IBM Plex Mono', monospace;
       font-size: 0.8rem;
       font-weight: 500;
-      color: #a099c8;
+      color: #8070b0;
       margin-bottom: 2.5rem;
       line-height: 1.5;
     }
@@ -252,7 +252,7 @@
       font-size: 1.08rem;
       font-weight: 500;
       line-height: 1.85;
-      color: #ccc5f0;
+      color: #3a2e60;
       margin-bottom: 1.5rem;
       max-width: 460px;
     }
@@ -273,7 +273,7 @@
       font-size: 0.97rem;
       font-weight: 500;
       line-height: 1.6;
-      color: #b0a8d8;
+      color: #4a3e70;
       transition: color 0.2s;
     }
 
@@ -304,20 +304,20 @@
 
     .panel-code .pull-quote {
       border-color: var(--code-accent);
-      background: rgba(184,255,87,0.05);
-      color: #d8ffaa;
+      background: rgba(61,153,0,0.06);
+      color: #1f5c00;
     }
 
     .panel-chat .pull-quote {
       border-color: var(--chat-accent);
-      background: rgba(255,77,184,0.05);
-      color: #ffb0e0;
+      background: rgba(194,0,107,0.05);
+      color: #8c004e;
     }
 
     /* ── TERMINAL MOCK ── */
     .terminal {
-      background: #060410;
-      border: 1px solid rgba(184,255,87,0.15);
+      background: #13102a;
+      border: 1px solid rgba(61,153,0,0.2);
       border-radius: 12px;
       padding: 1.4rem 1.6rem;
       font-family: 'IBM Plex Mono', monospace;
@@ -325,7 +325,7 @@
       line-height: 1.8;
       margin-top: 2.5rem;
       position: relative;
-      box-shadow: 0 0 40px rgba(184,255,87,0.06), inset 0 1px 0 rgba(255,255,255,0.04);
+      box-shadow: 0 4px 30px rgba(61,153,0,0.08), 0 1px 3px rgba(0,0,0,0.1);
     }
 
     .terminal-bar {
@@ -343,19 +343,19 @@
     .t-yellow { background: #febc2e; }
     .t-green  { background: #28c840; }
 
-    .t-prompt { color: var(--code-accent); }
-    .t-cmd    { color: var(--white); }
-    .t-out    { color: #4a4470; }
-    .t-hi     { color: var(--chat-accent); }
+    .t-prompt { color: #7dff40; }
+    .t-cmd    { color: #f0ecff; }
+    .t-out    { color: #6a5fa0; }
+    .t-hi     { color: #ff70c8; }
 
     /* ── CHAT MOCK ── */
     .chat-mock {
-      background: #060410;
-      border: 1px solid rgba(255,77,184,0.15);
+      background: #13102a;
+      border: 1px solid rgba(194,0,107,0.2);
       border-radius: 12px;
       padding: 1.4rem;
       margin-top: 2.5rem;
-      box-shadow: 0 0 40px rgba(255,77,184,0.06), inset 0 1px 0 rgba(255,255,255,0.04);
+      box-shadow: 0 4px 30px rgba(194,0,107,0.08), 0 1px 3px rgba(0,0,0,0.1);
     }
 
     .chat-bar {
@@ -393,18 +393,18 @@
     }
 
     .bubble-user {
-      background: rgba(255,255,255,0.05);
-      color: #9a92b8;
+      background: rgba(255,255,255,0.07);
+      color: #c0b8e8;
       align-self: flex-end;
-      border: 1px solid var(--border);
+      border: 1px solid rgba(255,255,255,0.1);
     }
 
     .bubble-ai {
-      background: rgba(255,77,184,0.07);
-      color: var(--chat-accent);
+      background: rgba(255,77,184,0.1);
+      color: #ff80cc;
       font-family: 'IBM Plex Mono', monospace;
       font-size: 0.72rem;
-      border: 1px solid rgba(255,77,184,0.18);
+      border: 1px solid rgba(255,77,184,0.2);
     }
 
     /* ── COMPARISON TABLE ── */
@@ -418,7 +418,7 @@
       content: '';
       position: absolute;
       inset: 0;
-      background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(120,80,255,0.06) 0%, transparent 60%);
+      background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(120,80,255,0.05) 0%, transparent 60%);
       pointer-events: none;
     }
 
@@ -428,7 +428,7 @@
       font-weight: 500;
       letter-spacing: 0.22em;
       text-transform: uppercase;
-      color: #a099c8;
+      color: #8070b0;
       margin-bottom: 1.2rem;
     }
 
@@ -461,8 +461,8 @@
       border-bottom: 1px solid var(--rule);
     }
 
-    thead th:nth-child(2) { color: var(--code-accent); }
-    thead th:nth-child(3) { color: var(--chat-accent); }
+    thead th:nth-child(2) { color: var(--code-mid); }
+    thead th:nth-child(3) { color: var(--chat-mid); }
     thead th:first-child  { color: var(--muted); }
 
     tbody tr {
@@ -470,11 +470,11 @@
       transition: background 0.15s;
     }
 
-    tbody tr:hover { background: rgba(255,255,255,0.025); }
+    tbody tr:hover { background: rgba(100,80,180,0.04); }
 
     tbody td {
       padding: 1.1rem 1.5rem;
-      color: #b0a8d8;
+      color: #3a2e60;
       font-weight: 500;
       vertical-align: middle;
       line-height: 1.6;
@@ -482,16 +482,16 @@
     }
 
     tbody td:first-child {
-      color: #a099c8;
+      color: #7060a0;
       font-family: 'IBM Plex Mono', monospace;
       font-size: 0.78rem;
       font-weight: 500;
       letter-spacing: 0.06em;
     }
 
-    .check-code { color: var(--code-accent); font-size: 1rem; }
-    .check-chat { color: var(--chat-accent); font-size: 1rem; }
-    .check-no   { color: #2a2040; font-size: 1rem; }
+    .check-code { color: var(--code-mid); font-size: 1rem; font-weight: 600; }
+    .check-chat { color: var(--chat-mid); font-size: 1rem; font-weight: 600; }
+    .check-no   { color: #c8c0e0; font-size: 1rem; }
 
     /* ── USE CASES ── */
     .use-cases {
@@ -514,7 +514,7 @@
     .use-intro {
       font-size: 1rem;
       font-weight: 500;
-      color: #a099c8;
+      color: #6050a0;
       line-height: 1.7;
       margin-bottom: 2rem;
       max-width: 420px;
@@ -535,7 +535,7 @@
       gap: 0.8rem;
       font-size: 0.97rem;
       font-weight: 500;
-      color: #b0a8d8;
+      color: #4a3e70;
       line-height: 1.6;
       transition: color 0.2s;
     }
@@ -566,7 +566,7 @@
       font-family: 'Fraunces', serif;
       font-weight: 700;
       font-size: 1.1rem;
-      background: linear-gradient(90deg, var(--code-accent), var(--chat-accent));
+      background: linear-gradient(90deg, var(--code-mid), var(--chat-mid));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -576,7 +576,7 @@
       font-family: 'IBM Plex Mono', monospace;
       font-size: 0.7rem;
       font-weight: 500;
-      color: #6a6090;
+      color: #a090c8;
       letter-spacing: 0.08em;
     }
 
@@ -604,11 +604,11 @@
     .cursor {
       display: inline-block;
       width: 7px; height: 14px;
-      background: var(--code-accent);
+      background: #7dff40;
       margin-left: 2px;
       vertical-align: middle;
       animation: blink 1.1s step-end infinite;
-      box-shadow: 0 0 8px var(--code-accent);
+      box-shadow: 0 0 8px rgba(125,255,64,0.6);
     }
 
     /* ── RESPONSIVE ── */
