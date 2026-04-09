@@ -111,6 +111,36 @@ All three outcome states use the **same Planet Result card layout**. The 0–4 s
 
 ---
 
+## Kid-Friendly UI Enhancements ("Full Package")
+
+### Mascot — Cosmo the Astronaut 🧑‍🚀
+- Cosmo is a small astronaut emoji character rendered in a speech bubble / dialogue box
+- Appears on: Grade Select ("Ready for liftoff, Explorer?"), Galaxy Map ("Pick a planet!"), correct answer ("AMAZING! Keep going! 🔥"), wrong answer ("Almost! The right answer is..."), Planet Result (cheering or encouraging), Mission Complete (celebration dance)
+- Cosmo's dialogue is rendered as a CSS speech bubble (no images required — pure emoji + CSS)
+- Cosmo does NOT appear during the question itself to avoid distraction
+
+### Answer Streak & Collectibles ⚡
+- A `streak` counter tracks consecutive correct answers within a planet session
+- At streak = 3: show "🔥 3 in a row!" flash badge
+- At streak = 5: show "⚡ COMBO × 5!" badge + gem collectible added to a visible gem tray
+- Gems collected: 💎 (blue, every 5-streak); streak resets on any wrong answer
+- Gem tray shown at top of Question Screen, persists across planets for the whole session
+- Gems are cosmetic only — no score impact
+
+### Animated Reactions (CSS-only, no JS libraries)
+- **Planet hover:** `transform: scale(1.15)` + wobble keyframe (`rotate ±5deg`) on Galaxy Map planets
+- **Answer selected:** button scales up briefly (`scale(1.08)`) then snaps — green burst ring on correct, red shake on wrong (`@keyframes shake`)
+- **Correct answer:** mini star burst animation (`✨`) radiates from the answer button using CSS `@keyframes`
+- **Planet completion:** full-screen emoji pop overlay (`🎉 or 🚀 or ⭐`) fades in and out over 1 second before showing Planet Result card
+- **3-star result:** CSS confetti (falling colored divs) + Cosmo jumps in speech bubble
+- **Mission Complete:** pulsing starfield intensifies, large animated trophy `🏆` bounces, Cosmo does a spin
+
+### Typography & Button Style
+- Buttons: large, rounded (`border-radius: 24px`), bold text, subtle drop shadow, scale on hover
+- Grade buttons: each has a small planet emoji prefix (🪐 Grade 2, 🌍 Grade 3, etc.)
+- Headings: extra-large (clamp 28px–48px), bright gradient text (`-webkit-background-clip: text`)
+- All body text: min 16px, high contrast, generous line-height (1.6)
+
 ## Visual Design
 
 | Token | Value | Purpose |
