@@ -286,12 +286,37 @@
     .cosmo-spin { display: inline-block; animation: cspin 1.2s linear infinite; font-size: 40px; }
     @keyframes cspin { to { transform: rotate(360deg); } }
     .complete-actions { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; width: 100%; }
+
+    /* ── Music Toggle (fixed, always visible) ── */
+    #music-toggle {
+      position: fixed; top: 14px; right: 14px; z-index: 999;
+      background: var(--surface2); border: 2px solid var(--border);
+      border-radius: 50%; width: 44px; height: 44px;
+      font-size: 20px; cursor: pointer; display: flex;
+      align-items: center; justify-content: center;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+    }
+    #music-toggle:hover { transform: scale(1.1); box-shadow: 0 0 18px rgba(167,139,250,0.5); }
+
+    /* ── Back Button on Question Screen ── */
+    .q-back-btn {
+      background: none; border: 2px solid var(--border);
+      border-radius: 20px; color: var(--muted);
+      font-family: inherit; font-size: 13px; font-weight: 700;
+      cursor: pointer; padding: 6px 14px;
+      transition: all 0.15s;
+    }
+    .q-back-btn:hover { border-color: var(--accent); color: var(--accent); }
   </style>
 </head>
 <body>
 
 <div id="starfield"></div>
 <div class="confetti-container" id="confetti"></div>
+
+<!-- Music toggle — always visible -->
+<button id="music-toggle" title="Toggle music" onclick="toggleBgMusic()">🎵</button>
 
 <!-- ══════════ SCREEN 1: Grade Select ══════════ -->
 <section data-screen="grade-select">
@@ -359,10 +384,13 @@
 
 <!-- ══════════ SCREEN 3: Question ══════════ -->
 <section data-screen="question">
-  <div class="gem-tray">
-    <span class="gem-label">Gems:</span>
-    <span id="gems-display"></span>
-    <span class="streak-badge" id="streak-badge"></span>
+  <div style="display:flex;justify-content:space-between;align-items:center;width:100%;margin-bottom:4px">
+    <button class="q-back-btn" onclick="exitToMap()">← Exit Planet</button>
+    <div class="gem-tray" style="margin-bottom:0;min-height:auto">
+      <span class="gem-label">Gems:</span>
+      <span id="gems-display"></span>
+      <span class="streak-badge" id="streak-badge"></span>
+    </div>
   </div>
 
   <div class="q-header">
@@ -511,6 +539,140 @@ function soundMissionComplete() {
 }
 
 // ════════════════════════════════════════════════
+// WELCOME VOICE (Web Speech API)
+// ════════════════════════════════════════════════
+let _welcomeSpoken = false;
+function speakWelcome() {
+  if (_welcomeSpoken || !window.speechSynthesis) return;
+  _welcomeSpoken = true;
+  // Small delay lets AudioContext resume on the same gesture
+  setTimeout(() => {
+    const utter = new SpeechSynthesisUtterance(
+      'Welcome to TAG Galaxy Quest! Pick your grade and launch your mission, explorer!'
+    );
+    utter.rate  = 0.92;
+    utter.pitch = 1.15;
+    utter.volume = 1;
+    window.speechSynthesis.speak(utter);
+  }, 200);
+}
+
+// Trigger on first user gesture anywhere on the page
+document.addEventListener('click', speakWelcome, { once: true });
+
+// ════════════════════════════════════════════════
+// BACKGROUND MUSIC  (Twinkle Twinkle — Web Audio lookahead scheduler)
+// ════════════════════════════════════════════════
+// Note frequencies (C5 octave for bright, kid-friendly sound)
+const NOTE = { C:523.25, D:587.33, E:659.25, F:698.46, G:783.99, A:880.00, B:987.77 };
+
+// Twinkle Twinkle Little Star  [freq, quarter-beats]
+const BG_MELODY = [
+  [NOTE.C,1],[NOTE.C,1],[NOTE.G,1],[NOTE.G,1],[NOTE.A,1],[NOTE.A,1],[NOTE.G,2],
+  [NOTE.F,1],[NOTE.F,1],[NOTE.E,1],[NOTE.E,1],[NOTE.D,1],[NOTE.D,1],[NOTE.C,2],
+  [NOTE.G,1],[NOTE.G,1],[NOTE.F,1],[NOTE.F,1],[NOTE.E,1],[NOTE.E,1],[NOTE.D,2],
+  [NOTE.G,1],[NOTE.G,1],[NOTE.F,1],[NOTE.F,1],[NOTE.E,1],[NOTE.E,1],[NOTE.D,2],
+  [NOTE.C,1],[NOTE.C,1],[NOTE.G,1],[NOTE.G,1],[NOTE.A,1],[NOTE.A,1],[NOTE.G,2],
+  [NOTE.F,1],[NOTE.F,1],[NOTE.E,1],[NOTE.E,1],[NOTE.D,1],[NOTE.D,1],[NOTE.C,2],
+];
+
+const bgMusic = {
+  enabled: true,
+  running: false,
+  step: 0,
+  nextNoteTime: 0,
+  timerID: null,
+  tempo: 0.38,   // seconds per quarter-beat — gentle pace
+  volume: 0.055, // soft, won't drown question sounds
+};
+
+function _bgSchedule() {
+  if (!bgMusic.running || !bgMusic.enabled) return;
+  const ctx = getAudio();
+  const LOOKAHEAD = 0.18; // seconds ahead to schedule
+  const INTERVAL  = 80;   // ms scheduler interval
+
+  while (bgMusic.nextNoteTime < ctx.currentTime + LOOKAHEAD) {
+    const [freq, beats] = BG_MELODY[bgMusic.step % BG_MELODY.length];
+    const dur = beats * bgMusic.tempo;
+    const t   = bgMusic.nextNoteTime;
+
+    // Melody — triangle wave (soft, flute-like)
+    const osc  = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(freq, t);
+    gain.gain.setValueAtTime(bgMusic.volume, t);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + dur * 0.88);
+    osc.start(t); osc.stop(t + dur);
+
+    // Soft bass (one octave down) on every 2 beats
+    if (bgMusic.step % 2 === 0) {
+      const bass  = ctx.createOscillator();
+      const bGain = ctx.createGain();
+      bass.connect(bGain); bGain.connect(ctx.destination);
+      bass.type = 'sine';
+      bass.frequency.setValueAtTime(freq / 2, t);
+      bGain.gain.setValueAtTime(bgMusic.volume * 0.5, t);
+      bGain.gain.exponentialRampToValueAtTime(0.0001, t + dur * 0.7);
+      bass.start(t); bass.stop(t + dur);
+    }
+
+    bgMusic.nextNoteTime += dur;
+    bgMusic.step++;
+  }
+
+  bgMusic.timerID = setTimeout(_bgSchedule, INTERVAL);
+}
+
+function startBgMusic() {
+  if (bgMusic.running) return;
+  bgMusic.running = true;
+  bgMusic.nextNoteTime = getAudio().currentTime + 0.05;
+  _bgSchedule();
+}
+
+function stopBgMusic() {
+  bgMusic.running = false;
+  if (bgMusic.timerID) { clearTimeout(bgMusic.timerID); bgMusic.timerID = null; }
+}
+
+function toggleBgMusic() {
+  if (bgMusic.running) {
+    stopBgMusic();
+    bgMusic.enabled = false;
+    document.getElementById('music-toggle').textContent = '🔇';
+  } else {
+    bgMusic.enabled = true;
+    startBgMusic();
+    document.getElementById('music-toggle').textContent = '🎵';
+  }
+}
+
+// ════════════════════════════════════════════════
+// SHUFFLE UTILITY
+// ════════════════════════════════════════════════
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ════════════════════════════════════════════════
+// EXIT PLANET MID-SESSION
+// ════════════════════════════════════════════════
+function exitToMap() {
+  if (state.advanceTimer) { clearTimeout(state.advanceTimer); state.advanceTimer = null; }
+  state.answered = false;
+  showScreen('galaxy-map');
+  renderGalaxyMap();
+}
+
+// ════════════════════════════════════════════════
 // CONSTANTS
 // ════════════════════════════════════════════════
 const ADVANCE_DELAY_MS = 3000;
@@ -536,6 +698,7 @@ const state = {
   grade: null,
   currentPlanet: null,
   currentQuestion: 0,
+  questionOrder: [],   // shuffled question list for current planet
   scores: { verbal: 0, quantitative: 0, patterns: 0, logic: 0 },
   completed: [],
   hasSeenMissionComplete: false,
@@ -581,6 +744,7 @@ function selectGrade(grade) {
 
 function startGame() {
   if (!state.grade) return;
+  startBgMusic(); // begin looping background music
   showScreen('galaxy-map');
   renderGalaxyMap();
 }
@@ -606,6 +770,7 @@ function renderGalaxyMap() {
 function startPlanet(planet) {
   state.currentPlanet = planet;
   state.currentQuestion = 0;
+  state.questionOrder = shuffleArray(QUESTIONS[state.grade][planet]); // randomize order
   state.scores[planet] = 0;
   state.streak = 0;
   state.answered = false;
@@ -615,8 +780,8 @@ function startPlanet(planet) {
 }
 
 function renderQuestion() {
-  const { grade, currentPlanet, currentQuestion } = state;
-  const q = QUESTIONS[grade][currentPlanet][currentQuestion];
+  const { currentPlanet, currentQuestion } = state;
+  const q = state.questionOrder[currentQuestion]; // uses shuffled order
   const meta = PLANET_META[currentPlanet];
 
   document.getElementById('q-planet-label').textContent = meta.label;
@@ -656,7 +821,7 @@ function submitAnswer(index) {
   state.answered = true;
   if (state.advanceTimer) { clearTimeout(state.advanceTimer); state.advanceTimer = null; }
 
-  const q = QUESTIONS[state.grade][state.currentPlanet][state.currentQuestion];
+  const q = state.questionOrder[state.currentQuestion]; // shuffled order
   const buttons = document.querySelectorAll('.answer-btn');
   buttons.forEach(b => b.disabled = true);
 
@@ -839,9 +1004,12 @@ function showMissionComplete() {
 // RESET
 // ════════════════════════════════════════════════
 function resetGame() {
+  stopBgMusic();
+  bgMusic.step = 0;
   state.grade = null;
   state.currentPlanet = null;
   state.currentQuestion = 0;
+  state.questionOrder = [];
   state.scores = { verbal: 0, quantitative: 0, patterns: 0, logic: 0 };
   state.completed = [];
   state.hasSeenMissionComplete = false;
