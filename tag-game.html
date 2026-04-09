@@ -418,6 +418,99 @@
 
 <script>
 // ════════════════════════════════════════════════
+// SOUND ENGINE (Web Audio API — no external files)
+// ════════════════════════════════════════════════
+let _audioCtx = null;
+function getAudio() {
+  if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return _audioCtx;
+}
+
+function playTone(freq, type, startTime, duration, gainVal, ctx) {
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.connect(gain); gain.connect(ctx.destination);
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, startTime);
+  gain.gain.setValueAtTime(gainVal, startTime);
+  gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+  osc.start(startTime);
+  osc.stop(startTime + duration);
+}
+
+function soundCorrect() {
+  try {
+    const ctx = getAudio();
+    const t = ctx.currentTime;
+    // Bright ascending chime: C5 → E5 → G5
+    playTone(523.25, 'sine', t,        0.18, 0.35, ctx);
+    playTone(659.25, 'sine', t + 0.12, 0.18, 0.35, ctx);
+    playTone(783.99, 'sine', t + 0.24, 0.28, 0.35, ctx);
+    // Soft shimmer layer
+    playTone(1046.5, 'sine', t + 0.24, 0.22, 0.12, ctx);
+  } catch(e) {}
+}
+
+function soundWrong() {
+  try {
+    const ctx = getAudio();
+    const t = ctx.currentTime;
+    // Low descending wobble
+    playTone(280, 'sawtooth', t,        0.15, 0.18, ctx);
+    playTone(220, 'sawtooth', t + 0.14, 0.22, 0.18, ctx);
+  } catch(e) {}
+}
+
+function soundStreak() {
+  try {
+    const ctx = getAudio();
+    const t = ctx.currentTime;
+    // Energetic rising notes
+    [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => {
+      playTone(f, 'triangle', t + i * 0.08, 0.18, 0.28, ctx);
+    });
+  } catch(e) {}
+}
+
+function soundPlanetComplete(stars) {
+  try {
+    const ctx = getAudio();
+    const t = ctx.currentTime;
+    if (stars === 3) {
+      // Triumphant fanfare — C E G C (octave)
+      const notes = [523.25, 659.25, 783.99, 1046.5];
+      notes.forEach((f, i) => playTone(f, 'sine', t + i * 0.14, 0.35, 0.38, ctx));
+      // Extra sparkle on top
+      playTone(2093, 'sine', t + 0.56, 0.3, 0.12, ctx);
+    } else if (stars === 2) {
+      // Warm two-note resolution
+      playTone(523.25, 'sine', t,        0.28, 0.32, ctx);
+      playTone(659.25, 'sine', t + 0.18, 0.32, 0.32, ctx);
+    } else {
+      // Single gentle tone — encouraging, not harsh
+      playTone(440, 'sine', t, 0.45, 0.25, ctx);
+    }
+  } catch(e) {}
+}
+
+function soundMissionComplete() {
+  try {
+    const ctx = getAudio();
+    const t = ctx.currentTime;
+    // Full fanfare: two-octave sweep + harmony
+    const melody = [523.25, 659.25, 783.99, 1046.5, 1318.5];
+    melody.forEach((f, i) => playTone(f, 'sine', t + i * 0.13, 0.4, 0.35, ctx));
+    // Bass support
+    playTone(261.63, 'sine', t,        0.6, 0.22, ctx);
+    playTone(392,    'sine', t + 0.26, 0.5, 0.18, ctx);
+    // Final sparkle chord
+    [1046.5, 1318.5, 1567.98].forEach((f, i) => {
+      playTone(f, 'sine', t + 0.65 + i * 0.06, 0.5, 0.12, ctx);
+    });
+  } catch(e) {}
+}
+
+// ════════════════════════════════════════════════
 // CONSTANTS
 // ════════════════════════════════════════════════
 const ADVANCE_DELAY_MS = 3000;
@@ -575,10 +668,12 @@ function submitAnswer(index) {
     state.scores[state.currentPlanet]++;
     state.streak++;
     document.getElementById('feedback-badge').textContent = 'Correct! ✨';
+    soundCorrect();
     handleStreak();
   } else {
     state.streak = 0;
     document.getElementById('feedback-badge').textContent = '';
+    soundWrong();
   }
 
   const exBox = document.getElementById('explanation-box');
@@ -593,11 +688,13 @@ function handleStreak() {
   if (state.streak === 3) {
     badge.textContent = '🔥 3 in a row!';
     badge.classList.add('visible');
+    soundStreak();
   } else if (state.streak >= 5 && state.streak % 5 === 0) {
     badge.textContent = `⚡ COMBO ×${state.streak}!`;
     badge.classList.add('visible');
     state.gems++;
     updateGemDisplay();
+    soundStreak();
   }
 }
 
@@ -647,12 +744,14 @@ function showPlanetResult() {
     cosmoMsg = "You're AMAZING! I knew you could do it! 🔥";
     cosmoEmoji = '🥳';
     spawnConfetti();
+    soundPlanetComplete(3);
   } else if (score >= 5) {
     stars = '⭐⭐';
     msg = 'Great job, Explorer!';
     sub = `You got ${score} out of 10 — keep going!`;
     cosmoMsg = "You're getting there — keep pushing! 💪";
     cosmoEmoji = '😊';
+    soundPlanetComplete(2);
   } else {
     stars = '⭐';
     msg = 'Keep Exploring!';
@@ -661,6 +760,7 @@ function showPlanetResult() {
     bannerText = 'Every explorer stumbles — the brave ones keep going! 🚀';
     cosmoMsg = "Let's try again — I believe in you! ✨";
     cosmoEmoji = '🤗';
+    soundPlanetComplete(1);
   }
 
   document.getElementById('result-planet-emoji').textContent = meta.emoji;
@@ -731,6 +831,7 @@ function showMissionComplete() {
   document.getElementById('complete-msg').textContent = msg;
   document.getElementById('complete-cosmo-msg').textContent = cosmoMsg;
   spawnConfetti();
+  soundMissionComplete();
   showScreen('mission-complete');
 }
 
