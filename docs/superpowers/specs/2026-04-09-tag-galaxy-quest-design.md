@@ -1,7 +1,7 @@
 # TAG Galaxy Quest — Design Spec
 **Date:** 2026-04-09
 **Project:** PGCPS TAG Practice Game
-**Stack:** Single-file HTML/CSS/JS, no dependencies
+**Stack:** Single-file HTML/CSS/JS. No JS dependencies. Google Fonts CDN is acceptable.
 
 ---
 
@@ -20,68 +20,93 @@ Grade Select → Galaxy Map → Question Screen → Planet Result → (repeat) �
 ### Screen 1 — Grade Select
 - Hero with rocket logo and tagline: "TAG Galaxy Quest"
 - Subtitle: "Choose your grade, Explorer!"
-- 7 buttons in a 2-column grid: Grade 2 through Grade 8
+- 7 buttons in a 2-column grid: Grade 2 through Grade 7, with Grade 8 as a full-width button spanning both columns on the last row
 - Selected grade highlights with a glowing border
-- "Launch Mission 🚀" CTA button activates after selection
+- "Launch Mission 🚀" CTA button activates only after a grade is selected
 - Dark starfield background, deep indigo/purple color palette
 
 ### Screen 2 — Galaxy Map
-- Starfield background with animated twinkling stars
-- 4 clickable glowing planets arranged in a loose orbital layout:
+- Starfield background (CSS-only animation — no `<canvas>`, no JS library)
+- 4 clickable glowing planets arranged in a 2×2 grid:
   - 📚 **Verbal Planet** — green glow
   - 🔢 **Quantitative Planet** — blue glow
   - 🔷 **Patterns Planet** — amber glow
   - 🧩 **Logic Planet** — pink glow
-- Progress badge: `0/4 Planets Conquered`
-- Completed planets: show ✓ checkmark, reduced glow, not re-enterable unless user wants to retry
-- Planet labels appear on hover/tap
+- Progress badge updates live as planets are completed: `X/4 Planets Conquered`
+- Completed planets: show ✓ checkmark, reduced glow, still clickable (retry allowed — see Retry Behavior below)
+- Planet labels always visible (not hover-only, for mobile friendliness)
+- **Transition to Mission Complete:** After the player returns to the Galaxy Map and all 4 planets are in the `completed` array, the game automatically navigates to Screen 5 (Mission Complete)
 
 ### Screen 3 — Question Screen
 - Header: planet name + category icon (top-left), question counter `Q 3/10` (top-right)
 - Progress bar fills across top as questions are answered
-- Question displayed in a card with large, readable font
-- 4 answer options (A–D) as tappable buttons
+- Question displayed in a card with large, readable font (min 18px)
+- 4 answer options (A–D) as tappable/clickable buttons with large tap targets (min 44px height)
 - On answer:
-  - Correct: button glows green, brief "Correct! ✨" feedback
+  - Correct: button glows green, brief "Correct! ✨" badge appears
   - Wrong: selected button glows red, correct answer highlighted green
-  - Auto-advances to next question after 1.5 seconds
+  - Explanation text (`question.explanation`) appears below the answer buttons as small italic text, visible for the full delay before advancing
+  - Auto-advances to next question after `ADVANCE_DELAY_MS = 2000` ms (2 seconds — enough for a child to read the explanation)
 - No timer shown
 
 ### Screen 4 — Planet Result
-Three outcome states based on score:
 
-| Score | Stars | Experience |
-|-------|-------|------------|
-| 8–10 correct | ⭐⭐⭐ | 🎉 Celebratory popup with confetti animation, "SUPERSTAR EXPLORER!" message |
-| 5–7 correct | ⭐⭐ | Standard result card, "Keep going, you're getting there!" |
-| 0–4 correct | ⭐ | Warm motivational overlay, "Every explorer stumbles — the brave ones keep going! Try again?" with prominent retry button |
+All three outcome states use the **same Planet Result card layout**. The 0–4 state adds a motivational message banner at the top of the card (not a separate overlay). All three states include a **"Return to Galaxy Map"** button. The 0–4 state additionally shows a prominent **"Try This Planet Again"** button above the Return button.
 
-- All states show score (`X/10`), star rating, and a message
-- "Return to Galaxy Map" button (or "Try Again" for low scores)
+| Score | Stars | Banner/Message | Buttons |
+|-------|-------|----------------|---------|
+| 8–10 | ⭐⭐⭐ | 🎉 "SUPERSTAR EXPLORER!" with confetti animation | "Return to Galaxy Map" |
+| 5–7  | ⭐⭐  | "Keep going, you're getting there!" | "Return to Galaxy Map" |
+| 0–4  | ⭐   | Motivational banner: "Every explorer stumbles — the brave ones keep going!" | "Try This Planet Again" (primary) + "Return to Galaxy Map" (secondary) |
+
+**Confetti animation (8–10 only):** CSS-only confetti using `@keyframes` falling colored squares/circles. No JS library.
+
+### Retry Behavior
+- A player may retry any planet (completed or not) by clicking it on the Galaxy Map
+- On retry, the new score **overwrites** the previous score for that planet
+- The planet remains in `completed` after any retry (it does not un-complete)
+- Mission Complete triggers when all 4 planets are in `completed` — retrying does not un-trigger it; the player finishes the retry, returns to Galaxy Map, and Mission Complete fires again with updated totals
 
 ### Screen 5 — Mission Complete
-- Triggered when all 4 planets are conquered
-- Celebration animation (stars, confetti)
+- Triggered automatically when the player returns to the Galaxy Map with all 4 planets in `completed`
+- Celebration animation (CSS stars/sparkles)
 - Total score: `X/40 questions correct`
-- Overall star rating
-- "Play Again" button resets to Grade Select
+- Overall star rating based on total score (thresholds aligned with per-planet thresholds: 4×8=32, 4×5=20):
+  - 32–40 correct → ⭐⭐⭐ "Galaxy Champion!"
+  - 20–31 correct → ⭐⭐ "Rising Star Explorer!"
+  - 0–19 correct → ⭐ "Keep Exploring — You've Got This!"
+- "Play Again" button resets all state to Grade Select
 
 ---
 
 ## Question Bank
 
 - **4 categories × 10 questions × 7 grade levels = 280 questions** total
-- Questions authored inline in JavaScript (no external fetch needed)
-- Each question object: `{ question, options: [A,B,C,D], answer, explanation }`
+- Questions authored inline as a top-level JS constant — no external fetch needed
+- Structure: `QUESTIONS[grade][category]` → array of 10 question objects
+
+**Question object schema:**
+```js
+{
+  question: "Happy is to Sad as Hot is to ___?",
+  options: ["Warm", "Cold", "Fire", "Weather"],  // full answer text; A/B/C/D labels prepended by renderer
+  answer: 1,           // integer index into options[] — options[1] = "Cold"
+  explanation: "Opposites: happy↔sad, hot↔cold."  // max ~15 words / 1-2 short sentences
+}
+```
+
+- `answer` is always an **integer index (0–3)** into `options[]`
+- Scoring: `selectedIndex === question.answer` (1 point per correct answer)
+- `QUESTIONS` key format: `QUESTIONS[gradeInt][categoryString]` — e.g., `QUESTIONS[4]['verbal']` for Grade 4 Verbal questions
 - Difficulty scales per grade:
-  - Grades 2–3: concrete, picture-based language
-  - Grades 4–5: intermediate reasoning
-  - Grades 6–8: abstract reasoning, multi-step logic
+  - Grades 2–3: concrete, everyday language, single-step reasoning
+  - Grades 4–5: intermediate reasoning, slightly abstract
+  - Grades 6–8: abstract reasoning, multi-step logic, advanced vocabulary
 
 ### Category Breakdown
-- **Verbal Reasoning:** analogies, vocabulary in context, reading comprehension snippets
+- **Verbal Reasoning:** analogies, vocabulary in context, sentence completion
 - **Quantitative Reasoning:** number patterns, arithmetic word problems, sequences
-- **Non-Verbal / Patterns:** shape sequences, matrix completion (described in text), spatial reasoning
+- **Non-Verbal / Patterns:** shape sequences described in text, matrix completion, spatial reasoning
 - **Logic & Sequences:** cause & effect, ordering, deductive reasoning
 
 ---
@@ -100,45 +125,81 @@ Three outcome states based on score:
 | Text primary | `#e0d7ff` | Light lavender white |
 | Text muted | `#8b7db8` | Dimmed purple |
 
-- Font: system-safe stack — `'Nunito', 'Segoe UI', sans-serif` (rounded, kid-friendly)
-- Animated starfield: CSS keyframe animation, ~100 tiny star dots
-- Planet hover: `scale(1.1)` + glow intensifies
-- All interactive elements: large tap targets (min 44px), high contrast
+- **Font:** `'Nunito', 'Segoe UI', sans-serif` — imported via Google Fonts CDN (rounded, kid-friendly)
+- **Starfield:** CSS-only `@keyframes` animation — ~50 `<span>` elements (capped for performance on low-end tablets) with `will-change: opacity` and randomized positions and blink delays. No `<canvas>`, no JS library.
+- **Confetti (3-star Planet Result only):** Pure CSS `@keyframes` falling squares/circles — colored `<div>` elements animated with `translateY` + `rotate`. No JS confetti library.
+- Planet hover/focus: `transform: scale(1.1)` + glow intensity increases
+- All interactive elements: min 44px tap targets, WCAG AA color contrast (≥ 4.5:1 for text). No formal accessibility audit, but semantic HTML (`<button>`, `<section>`, `aria-label`) is expected throughout.
 
 ---
 
 ## Architecture
 
-- **Single file:** `tag-game.html`
-- **No external dependencies** — pure HTML/CSS/JS
-- **State managed in JS object:**
-  ```js
-  state = {
-    grade: null,           // 2–8
-    currentPlanet: null,   // 'verbal' | 'quantitative' | 'patterns' | 'logic'
-    currentQuestion: 0,    // 0–9
-    scores: { verbal: 0, quantitative: 0, patterns: 0, logic: 0 },
-    completed: []          // planets completed
-  }
-  ```
-- **Rendering:** `showScreen(name)` hides all sections, shows target `<section>` via CSS class
-- **Question bank:** top-level `QUESTIONS` const, keyed by `grade → category → array`
+**File:** `tag-game.html` (single file)
+
+**Scoring:** 1 point per correct answer. Max 10 per planet. Max 40 total across all planets.
+
+**State object:**
+```js
+const state = {
+  grade: null,                  // integer 2–8
+  currentPlanet: null,          // 'verbal' | 'quantitative' | 'patterns' | 'logic'
+  currentQuestion: 0,           // 0–9
+  scores: {
+    verbal: 0,
+    quantitative: 0,
+    patterns: 0,
+    logic: 0
+  },
+  completed: [],                // planet keys finished at least once
+  hasSeenMissionComplete: false // true after first auto-route to Mission Complete
+};
+```
+
+**Constants:**
+```js
+const ADVANCE_DELAY_MS = 3000;   // ms before auto-advancing after an answer (3s — enough for a child to read explanation)
+const PLANETS = ['verbal', 'quantitative', 'patterns', 'logic'];
+```
+
+**Tap-to-advance:** The player may also tap/click anywhere on the question screen after answering to advance immediately, without waiting for `ADVANCE_DELAY_MS`. This accommodates faster readers.
+
+**Screen management:**
+```js
+function showScreen(name) {
+  // hides all <section data-screen="..."> elements
+  // shows the one with data-screen === name
+}
+```
+
+**Key functions:**
+- `startGame(grade)` — sets state.grade, calls showScreen('galaxy-map')
+- `startPlanet(planet)` — resets currentQuestion/score for that planet, showScreen('question')
+- `submitAnswer(index)` — scores, shows feedback, queues advance
+- `showPlanetResult()` — calculates stars, renders result card
+- `returnToGalaxyMap()` — updates completed[], then:
+  - If `completed[].length === 4` AND `hasSeenMissionComplete === false`: set flag to true, call `showMissionComplete()`
+  - If `completed[].length === 4` AND `hasSeenMissionComplete === true`: showScreen('galaxy-map') (Galaxy Map shows a "View Results" button that calls `showMissionComplete()`)
+  - Otherwise: showScreen('galaxy-map')
+- `showMissionComplete()` — computes total score by summing current `scores{}` values at render time (always reflects most recent attempt per planet); renders Mission Complete screen. Called by `returnToGalaxyMap()` on first completion and by "View Results" button on subsequent visits.
+- `resetGame()` — resets `grade`, `scores`, `completed[]`, `currentPlanet`, `currentQuestion`, and `hasSeenMissionComplete` to initial values; calls showScreen('grade-select')
 
 ---
 
 ## Deployment
 
-- File saved as `tag-game.html` alongside existing `index.html`
-- Pushed to GitHub: `https://github.com/gazelle8802-ui/claude-code-vs-chat`
-- Deployed to Vercel: `https://claude-code-vs-chat-opal.vercel.app/tag-game.html`
-- Deploy command: `vercel --prod --token <token> --yes --scope gazelle8802-7292s-projects --name claude-code-vs-chat`
+- File: `tag-game.html` alongside existing `index.html`
+- GitHub: `https://github.com/gazelle8802-ui/claude-code-vs-chat`
+- Vercel: `https://claude-code-vs-chat-opal.vercel.app/tag-game.html`
+- Deploy: `vercel --prod --token <token> --yes --scope gazelle8802-7292s-projects --name claude-code-vs-chat`
+- GitHub push: `git push "https://<PAT>@github.com/gazelle8802-ui/claude-code-vs-chat.git" main`
 
 ---
 
 ## Out of Scope
 
-- User accounts / score persistence (no backend)
-- Sound effects / audio
-- Images or external assets
+- User accounts / score persistence across sessions
+- Sound effects or audio
+- External images or SVG assets
+- Formal accessibility audit (basic semantic HTML and WCAG AA contrast expected)
 - Mobile app packaging
-- Accessibility audit (basic a11y only)
