@@ -30,9 +30,9 @@ async function main() {
   // rows[1+] = ["ZCTA5 78702, Texas", "78702"]
   const out = {};
   for (let i = 1; i < rows.length; i++) {
-    const label = rows[i][0].replace(/^ZCTA5\s+/, ''); // "78702, Texas"
+    // Census NAME format: "ZCTA5 78702" — keep as "ZIP 78702" for display
     const zcta = rows[i][1];
-    out[zcta] = label;
+    out[zcta] = `ZIP ${zcta}`;
   }
   const outPath = path.join(__dirname, '..', 'data', 'zcta-names.json');
   fs.writeFileSync(outPath, JSON.stringify(out));
